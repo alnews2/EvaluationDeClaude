@@ -64,6 +64,36 @@ livraison de patches/archives à appliquer manuellement — plus sûre côté
 partage de secret, mais moins fluide ; le token restreint et à expiration
 a été jugé suffisamment sûr pour ce contexte.
 
+## 2026-09-14 — Construction multi-plateforme (CI)
+
+### Problème
+
+PyInstaller ne fait pas de compilation croisée : un exécutable Windows ne
+peut être produit qu'en exécutant PyInstaller sur Windows (idem pour
+macOS). L'environnement de développement utilisé ici est Linux uniquement.
+
+### Solution retenue : GitHub Actions
+
+Un workflow (`.github/workflows/build.yml`) se déclenche à chaque push sur
+`main` et à la demande. Il :
+
+1. Lance la suite de tests sur `ubuntu-latest` (garde-fou avant toute
+   construction).
+2. Construit l'exécutable en parallèle sur `ubuntu-latest` et
+   `windows-latest` via PyInstaller, et publie chaque binaire comme
+   artefact téléchargeable.
+
+**Raison** : c'est l'approche standard pour ce problème (plutôt qu'un
+bricolage de cross-compilation, peu fiable pour des bindings Qt). Elle a
+aussi l'avantage de garantir que les tests passent avant toute
+construction, et de tracer chaque build dans l'historique GitHub Actions.
+
+**Limite connue** : l'exécutable Windows n'est pas signé numériquement.
+Windows SmartScreen pourra afficher un avertissement au premier lancement
+("Éditeur inconnu") — normal pour un exécutable non signé, pas un signe de
+dysfonctionnement. Une signature de code est envisageable si le projet
+grossit, mais suppose l'achat d'un certificat, jugé disproportionné ici.
+
 ### Formatage de l'affichage
 
 Séparateur décimal `,` (convention française) plutôt que `.`. Les résultats

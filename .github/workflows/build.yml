@@ -1,0 +1,48 @@
+name: Construction des exécutables
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer les dépendances
+        run: pip install -e ".[dev]"
+      - name: Lancer les tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest tests/ -v
+
+  construction:
+    needs: tests
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            nom_artefact: Calculatrice-linux-x86_64
+            nom_fichier: Calculatrice
+          - os: windows-latest
+            nom_artefact: Calculatrice-windows-x86_64
+            nom_fichier: Calculatrice.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer les dépendances
+        run: pip install -e ".[dev]" pyinstaller
+      - name: Construire l'exécutable
+        run: pyinstaller --name Calculatrice --onefile --windowed --paths src src/calculatrice/fenetre.py
+      - name: Publier l'artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.nom_artefact }}
+          path: dist/${{ matrix.nom_fichier }}
