@@ -53,3 +53,29 @@ jobs:
         with:
           name: ${{ matrix.nom_artefact }}
           path: dist/${{ matrix.nom_fichier }}
+
+  publier_release:
+    needs: construction
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artefacts
+      - name: Préparer les fichiers de release
+        run: |
+          mkdir -p release
+          cp artefacts/Calculatrice-linux-x86_64/Calculatrice release/Calculatrice-linux-x86_64
+          cp artefacts/Calculatrice-windows-x86_64/Calculatrice.exe release/Calculatrice-windows-x86_64.exe
+          chmod +x release/Calculatrice-linux-x86_64
+      - name: Créer ou mettre à jour la release "dernieres-constructions"
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: dernieres-constructions
+          name: Dernières constructions (mise à jour automatique)
+          body: Exécutables générés automatiquement à chaque évolution poussée sur main.
+          files: |
+            release/Calculatrice-linux-x86_64
+            release/Calculatrice-windows-x86_64.exe

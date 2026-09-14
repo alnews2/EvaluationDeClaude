@@ -94,6 +94,18 @@ Windows SmartScreen pourra afficher un avertissement au premier lancement
 dysfonctionnement. Une signature de code est envisageable si le projet
 grossit, mais suppose l'achat d'un certificat, jugé disproportionné ici.
 
+### Distribution des exécutables via GitHub Release plutôt qu'artefacts CI
+
+Les artefacts de workflow GitHub Actions sont téléchargeables uniquement
+via une redirection vers un stockage Azure Blob, que l'environnement de
+développement local n'a pas le droit d'atteindre (restriction réseau de
+sécurité). Pour rester capable de récupérer et vérifier moi-même les
+binaires produits avant de les remettre, le workflow publie donc les
+exécutables comme fichiers attachés à une GitHub Release
+(tag `dernieres-constructions`, mise à jour à chaque construction réussie)
+plutôt que comme simples artefacts de run. Les releases sont accessibles
+sur un domaine autorisé.
+
 ### Formatage de l'affichage
 
 Séparateur décimal `,` (convention française) plutôt que `.`. Les résultats
