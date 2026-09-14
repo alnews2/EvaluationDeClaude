@@ -1,0 +1,27 @@
+[project]
+name = "calculatrice"
+version = "0.1.0"
+description = "Calculatrice standalone (quatre opérations) — démonstration d'application desktop"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-qt>=4.4",
+]
+
+[project.scripts]
+calculatrice = "calculatrice.fenetre:lancer_application"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
