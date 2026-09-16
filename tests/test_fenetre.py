@@ -58,3 +58,16 @@ def test_fenetre_a_le_bon_titre(qtbot):
     fenetre = FenetreCalculatrice()
     qtbot.addWidget(fenetre)
     assert fenetre.windowTitle() == "Calculatrice"
+
+
+def test_mention_generation_presente_et_en_italique(qtbot):
+    fenetre = FenetreCalculatrice()
+    qtbot.addWidget(fenetre)
+
+    from PySide6.QtWidgets import QLabel
+
+    labels = [l for l in fenetre.findChildren(QLabel) if l.objectName() == "mentionGeneration"]
+    assert len(labels) == 1
+    label = labels[0]
+    assert label.text() == "Application générée par l'intelligence artificielle Claude de la société Anthropic."
+    assert label.font().italic()

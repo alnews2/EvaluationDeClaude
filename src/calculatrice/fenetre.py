@@ -24,7 +24,7 @@ from PySide6.QtWidgets import (
 from calculatrice.moteur import MachineCalculatrice, Operation
 
 LARGEUR_FENETRE = 320
-HAUTEUR_FENETRE = 420
+HAUTEUR_FENETRE = 460
 
 
 class FenetreCalculatrice(QWidget):
@@ -44,6 +44,7 @@ class FenetreCalculatrice(QWidget):
         agencement.setSpacing(12)
         agencement.addWidget(self._label_affichage)
         agencement.addLayout(self._creer_grille_boutons())
+        agencement.addWidget(self._creer_label_mention())
 
         self._rafraichir_affichage()
 
@@ -56,6 +57,17 @@ class FenetreCalculatrice(QWidget):
         label.setFont(police)
         label.setObjectName("affichage")
         label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        return label
+
+    def _creer_label_mention(self) -> QLabel:
+        label = QLabel("Application générée par l'intelligence artificielle Claude de la société Anthropic.")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setWordWrap(True)
+        police = QFont()
+        police.setPointSize(8)
+        police.setItalic(True)
+        label.setFont(police)
+        label.setObjectName("mentionGeneration")
         return label
 
     def _creer_grille_boutons(self) -> QGridLayout:
