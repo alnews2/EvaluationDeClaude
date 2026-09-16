@@ -7,3 +7,8 @@ dist/
 *.spec
 .venv/
 venv/
+
+# Exécutables téléchargés localement pour vérification — produits par la CI,
+# ne doivent pas être versionnés (trop volumineux pour un dépôt Git).
+/Calculatrice-linux-x86_64
+/Calculatrice-windows-x86_64.exe
