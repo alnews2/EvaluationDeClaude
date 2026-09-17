@@ -6,6 +6,12 @@ d'une petite application desktop développée de façon incrémentale.
 
 ![Capture d'écran de la calculatrice](capture_ecran.png)
 
+## Versionnement
+
+Ce projet suit le [Versionnement Sémantique](https://semver.org/lang/fr/).
+Voir [`CHANGELOG.md`](CHANGELOG.md) pour l'historique détaillé des
+modifications, version par version.
+
 ## Lancer l'application (environnement de développement)
 
 ```bash
@@ -38,6 +44,7 @@ src/calculatrice/
 tests/
   test_moteur.py   # Tests unitaires de la logique
   test_fenetre.py  # Tests d'intégration de l'IHM (simulation de clics)
+CHANGELOG.md         # Historique des versions (format Keep a Changelog)
 ARCHITECTURE.md     # Historique des décisions de conception
 ```
 

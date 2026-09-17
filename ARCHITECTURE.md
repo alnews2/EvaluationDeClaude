@@ -110,3 +110,24 @@ sur un domaine autorisé.
 
 Séparateur décimal `,` (convention française) plutôt que `.`. Les résultats
 entiers sont affichés sans décimale superflue (`4` plutôt que `4.0`).
+
+## 2026-09-17 — Versionnement et journal des modifications
+
+### Adoption de SemVer + Keep a Changelog
+
+Le projet adopte le [Versionnement Sémantique](https://semver.org/lang/fr/)
+(`pyproject.toml`, champ `version`) et tient un `CHANGELOG.md` au format
+[Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
+
+**Choix pour la plage de versions** : le projet reste en `0.y.z` (phase de
+développement initial selon SemVer) tant que l'application n'est pas jugée
+stable dans ses fonctionnalités de base. Les incréments mineurs (`0.x.0`)
+correspondent à des ajouts de fonctionnalité ou des changements visibles
+notables ; les incréments de correctif (`0.x.y`) seraient réservés aux
+corrections de bug sans changement de comportement voulu.
+
+**Historique reconstitué rétroactivement** : les versions 0.1.0 à 0.3.0
+n'avaient pas été formellement taguées au moment de leur livraison ; des
+tags Git annotés (`v0.1.0`, `v0.2.0`, `v0.3.0`) ont été créés a posteriori
+sur les commits correspondants pour que le changelog et ses liens de
+comparaison GitHub restent exacts et vérifiables.

@@ -57,6 +57,14 @@ class FenetreCalculatrice(QWidget):
         label.setFont(police)
         label.setObjectName("affichage")
         label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        label.setStyleSheet(
+            "QLabel#affichage {"
+            " border: 1px solid #a0a0a0;"
+            " border-radius: 6px;"
+            " background-color: #fafafa;"
+            " padding-right: 12px;"
+            "}"
+        )
         return label
 
     def _creer_label_mention(self) -> QLabel:
