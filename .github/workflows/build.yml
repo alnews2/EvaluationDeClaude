@@ -71,11 +71,45 @@ jobs:
           cp artefacts/Calculatrice-windows-x86_64/Calculatrice.exe release/Calculatrice-windows-x86_64.exe
           chmod +x release/Calculatrice-linux-x86_64
       - name: Créer ou mettre à jour la release "dernieres-constructions"
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: dernieres-constructions
-          name: Dernières constructions (mise à jour automatique)
-          body: Exécutables générés automatiquement à chaque évolution poussée sur main.
-          files: |
-            release/Calculatrice-linux-x86_64
-            release/Calculatrice-windows-x86_64.exe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+
+          TAG="dernieres-constructions"
+          TITRE="Dernières constructions (mise à jour automatique)"
+          NOTES="Exécutables générés automatiquement à chaque évolution poussée sur main."
+          TENTATIVES_MAX=3
+          DELAI_SECONDES=20
+
+          for tentative in $(seq 1 "$TENTATIVES_MAX"); do
+            echo "::group::Tentative $tentative / $TENTATIVES_MAX"
+
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release upload "$TAG" \
+                release/Calculatrice-linux-x86_64 \
+                release/Calculatrice-windows-x86_64.exe \
+                --clobber
+            else
+              gh release create "$TAG" \
+                release/Calculatrice-linux-x86_64 \
+                release/Calculatrice-windows-x86_64.exe \
+                --title "$TITRE" \
+                --notes "$NOTES"
+            fi
+            resultat=$?
+            echo "::endgroup::"
+
+            if [ "$resultat" -eq 0 ]; then
+              echo "Publication réussie (tentative $tentative)."
+              exit 0
+            fi
+
+            if [ "$tentative" -lt "$TENTATIVES_MAX" ]; then
+              echo "Échec (probablement transitoire). Nouvelle tentative dans ${DELAI_SECONDES}s..."
+              sleep "$DELAI_SECONDES"
+            fi
+          done
+
+          echo "Échec de la publication après $TENTATIVES_MAX tentatives."
+          exit 1

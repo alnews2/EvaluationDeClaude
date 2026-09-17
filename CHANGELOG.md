@@ -11,6 +11,14 @@ majeur d'une version mineure à l'autre.
 
 ## [Non publié]
 
+### Modifié
+
+- CI : la publication de la release automatique (`publier_release`)
+  n'utilise plus l'action tierce `softprops/action-gh-release` mais des
+  appels directs à `gh` (CLI officielle GitHub), avec 3 tentatives
+  automatiques en cas d'échec transitoire. Objectif : plus de robustesse
+  et moins de dépendances externes au workflow.
+
 ## [0.4.0] - 2026-09-17
 
 ### Modifié

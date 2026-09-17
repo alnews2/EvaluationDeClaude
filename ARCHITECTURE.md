@@ -131,3 +131,38 @@ n'avaient pas été formellement taguées au moment de leur livraison ; des
 tags Git annotés (`v0.1.0`, `v0.2.0`, `v0.3.0`) ont été créés a posteriori
 sur les commits correspondants pour que le changelog et ses liens de
 comparaison GitHub restent exacts et vérifiables.
+
+## 2026-09-17 — Fiabilisation de la publication de release
+
+### Problème rencontré
+
+Le job `publier_release` a échoué une fois en raison d'un réglage du
+dépôt (permissions par défaut du jeton de workflow en lecture seule),
+corrigé côté GitHub. Mais cet échec a mis en lumière un point de
+fragilité plus général : la publication dépendait d'une action tierce
+(`softprops/action-gh-release`) exécutée en un seul essai, sans
+tolérance aux échecs transitoires (limite de débit de l'API GitHub,
+latence de propagation d'un changement de permissions, etc.).
+
+### Solution retenue
+
+Remplacement de l'action tierce par des appels directs à `gh`, l'outil en
+ligne de commande officiel de GitHub (préinstallé sur tous les runners
+GitHub Actions), enrobés d'une boucle de nouvelles tentatives (3 essais,
+20 secondes d'attente entre chaque).
+
+**Raison de ce choix plutôt que d'ajouter une action de retry tierce** :
+- Réduit le nombre de dépendances externes au workflow (une action tierce
+  en moins), ce qui limite la surface de risque (dépendance à un
+  mainteneur externe, changement de comportement entre versions).
+- `gh` est un outil officiel, déjà présent sur les runners, dont le
+  comportement est documenté et stable.
+- La logique de nouvelle tentative reste simple et lisible (boucle bash),
+  sans dépendre d'une syntaxe ou d'un comportement propre à une action de
+  retry générique.
+
+Cette boucle ne corrige pas un problème de configuration (comme celui
+rencontré) — elle absorbe les échecs ponctuels et transitoires. Un
+problème de configuration persistant (permissions toujours refusées,
+par exemple) continuera logiquement à faire échouer les trois tentatives
+et à faire remonter l'erreur, ce qui est le comportement souhaité.
